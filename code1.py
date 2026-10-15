@@ -1,10 +1,16 @@
 import csv
+import sys
+import os
+import dotenv
+dotenv.load_dotenv()
+
 
 # Reading CSV file
-with open('sales_data.csv', 'r') as file:
+file=os.getenv("filename")
+print ("file name: ", file)
+with open(file, 'r', newline='') as file:
     reader = csv.reader(file)
     headers = next(reader)  # Get headers
-    
-    for row in reader:
-        print(row)
 
+    # Buffer output and write once instead of calling print() per row
+    sys.stdout.write(''.join(f'{row}\n' for row in reader))
