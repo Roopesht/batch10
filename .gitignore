@@ -1,3 +1,7 @@
 .env
 a.tmp
 *.pyc
+
+# KNM
+.claude/requirements.json
+.knm/

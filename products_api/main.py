@@ -1,4 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+from models import Product
+from business_logic import add_product
 app = FastAPI()
 
 prods = [
@@ -16,10 +19,17 @@ def get_products():
     prod_list = [p["name"] for p in prods]
     return {"msg": ",".join(prod_list) }
 
+def get_username():
+    #open database
+    #get the table users
+    #from the passed userid get the name
+    return "Roopesh"
+
 ## Path parameter
 @app.get("/product/{productid}")
 def get_product(productid):
     price = [ p["price"] for p in prods if p["name"] == productid  ]
+
     if price:
         return {"msg": price }
     else:
@@ -35,3 +45,19 @@ def get_product(productid:str=None):
     else:
         return {"msg": "product not founnd" }
 
+
+@app.post("/product")
+def create_product(product: Product):
+
+    if product.name in ('gun', 'bomb'):
+        raise HTTPException(
+                    status_code=503,
+                    detail=f"You are trying to add prohibitory item"
+                )
+            
+    prod = {'name': product.name, 'price':  product.price, 'stock': product.stock}
+
+    #prods.append (prod)
+    add_product(prod)
+
+    return {"msg": 'successful' }
